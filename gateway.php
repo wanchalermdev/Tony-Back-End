@@ -1,4 +1,5 @@
 <?php
+$GLOBALS['debug_display'] = false;
 /*
 Array
 (
@@ -47,9 +48,48 @@ Apache/2.4.27 (Win32) OpenSSL/1.0.2l PHP/7.1.9 Server at localhost Port 80
     [REQUEST_TIME] => 1520135214
 )
 */
+function console($str){
+    if($GLOBALS['debug_display']){
+        echo '<div>';
+        echo $str;
+        echo '</div>';
+    }
+    
+}
+function SwitchTopic($topic, $id){
+    $response = array();
+    switch($topic){
+        case "abc": 
+            $response['operation'] = 'success';
+            $response['topic'] = $topic;
+            break;
+        default : $response['operation'] = 'fail';
+    }
+    return $response;
+}
+
 $URI = explode("/", $_SERVER['REQUEST_URI']);
-echo '<pre>';
-print_r($URI);
-echo '</pre>';
-echo count($URI);
+/*
+ * ตรวจสอบเบื้องต้นว่า URI เมื่อ Explode แล้วจะเป็นอาเรย์ขนาด 2 หรือ 3 ตัวเท่านั้น
+*/
+$count_uri = count($URI);
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    if($count_uri == 3){
+        console("Good URI Request");
+        $DataOperation = SwitchTopic($URI[1], $URI[2]);
+        echo json_encode($DataOperation);
+    }else{
+        console("Bad URI Request");
+        http_response_code(404);
+    }
+}else{
+    console("Bad Method Request");
+    http_response_code(404);
+}
+
+// echo '<pre>';
+// print_r($URI);
+// print_r($_SERVER);
+// echo '</pre>';
+// echo count($URI);
 ?>
