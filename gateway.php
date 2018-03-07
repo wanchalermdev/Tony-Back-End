@@ -8,6 +8,7 @@ function console($str){
         echo '</div>';
     }
 }
+
 function SwitchTopic($topic, $id){
     $response = array();
     switch($topic){
@@ -28,7 +29,20 @@ $count_uri = count($URI);
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     if($count_uri == 3){
         console("Good URI Request");
+
+        /*
+        *   Switch Topic
+        */
         $DataOperation = SwitchTopic($URI[1], $URI[2]);
+
+        /*
+        *   Response
+        */
+        header("Content-Type: application/json; charset=UTF-8");
+        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Max-Age: 3600");
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
         echo json_encode($DataOperation);
     }else{
         console("Bad URI Request");
